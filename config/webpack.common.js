@@ -3,11 +3,13 @@ var HtmlWebpackPlugin = require('html-webpack-plugin');
 var ExtractTextPlugin = require('extract-text-webpack-plugin');
 var helpers = require('./helpers');
 
+const API_URL = process.env.API_URL || "http://localhost:3000";
+
 module.exports = {
   entry: {
-    'polyfills': './src/polyfills.ts',
-    'vendor': './src/vendor.ts',
-    'app': './src/main.ts'
+    'polyfills': './app/polyfills.ts',
+    'vendor': './app/vendor.ts',
+    'app': './app/main.ts'
   },
 
   resolve: {
@@ -30,12 +32,12 @@ module.exports = {
       },
       {
         test: /\.css$/,
-        exclude: helpers.root('src', 'app'),
+        exclude: helpers.root('app'),
         loader: ExtractTextPlugin.extract('style', 'css?sourceMap')
       },
       {
         test: /\.css$/,
-        include: helpers.root('src', 'app'),
+        include: helpers.root('app'),
         loader: 'raw'
       }
     ]
@@ -47,7 +49,13 @@ module.exports = {
     }),
 
     new HtmlWebpackPlugin({
-      template: 'src/index.html'
+      template: 'index.html'
+    }),
+
+    new webpack.DefinePlugin({
+      'process.env': {
+        'API_URL': JSON.stringify(API_URL)
+      }
     })
   ]
 };
